@@ -20,8 +20,8 @@ export default function SignUpPage() {
     setLoading(true);
     
     // Validate email domain
-    if (!email.endsWith('@arhpez.com')) {
-      setEmailError('Please use an email address from @arhpez.com');
+    if (!email.endsWith('@arhpez.com') && !email.endsWith('@gmail.com')) {
+      setEmailError('Please use an email address from @arhpez.com or @gmail.com');
       setLoading(false);
       return;
     }
@@ -38,7 +38,7 @@ export default function SignUpPage() {
       return;
     }
 
-    const { error: authError } = await supabase.auth.signUp({
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -49,9 +49,16 @@ export default function SignUpPage() {
       return;
     }
 
+    if (!authData.user) {
+      setError('User creation failed');
+      setLoading(false);
+      return;
+    }
+
     const { error: dbError } = await supabase
       .from('users')
       .insert([{ 
+        id: authData.user.id,
         email, 
         full_name: fullName,
         role 
