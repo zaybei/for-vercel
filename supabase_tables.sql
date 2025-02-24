@@ -19,6 +19,8 @@ CREATE TABLE projects (
     description TEXT,
     owner_id UUID REFERENCES users(id) ON DELETE CASCADE,
     status TEXT DEFAULT 'active' CHECK (status IN ('active', 'archived')),
+
+
     start_date DATE,
     end_date DATE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
